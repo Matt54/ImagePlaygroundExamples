@@ -9,8 +9,8 @@ import SwiftUI
 
 struct MainView: View {
     var body: some View {
-        NavigationStack {
-            Form {
+        NavigationSplitView {
+            List {
                 if #available(iOS 18.1, macOS 15.1, *) {
                     NavigationLink("Simple Integration", destination: SimpleIntegrationView())
                     NavigationLink("Simple Concept", destination: SimpleConceptView())
@@ -21,11 +21,11 @@ struct MainView: View {
                     Text("No iOS 18.1 Support")
                 }
             }
-            #if os(iOS)
-            .navigationBarTitle("Image Playground Examples")
-            .navigationBarTitleDisplayMode(.inline)
-            #endif
+        } detail: {
+            ContentUnavailableView("Select an example from the sidebar",
+                                   systemImage: "doc.text.image.fill")
         }
+        .navigationTitle("Image Playground Examples")
     }
 }
 

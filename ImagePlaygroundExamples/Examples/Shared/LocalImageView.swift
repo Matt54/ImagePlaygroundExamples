@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// Displays an image from a local file url
 struct LocalImageView: View {
     let imageURL: URL?
     

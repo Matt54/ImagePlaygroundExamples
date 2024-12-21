@@ -21,8 +21,10 @@ struct MainView: View {
                     Text("No iOS 18.1 Support")
                 }
             }
+            #if os(iOS)
             .navigationBarTitle("Image Playground Examples")
             .navigationBarTitleDisplayMode(.inline)
+            #endif
         }
     }
 }

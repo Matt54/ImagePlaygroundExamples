@@ -75,9 +75,9 @@ struct SourceImageIntegrationView: View {
         guard let url = URL(string: "https://picsum.photos/200") else { return }
         
         URLSession.shared.dataTask(with: url) { data, response, error in
-            if let data = data, let downloadedImage = UIImage(data: data) {
+            if let data = data, let downloadedImage = PlatformImage(data: data) {
                 DispatchQueue.main.async {
-                    self.image = Image(uiImage: downloadedImage)
+                    self.image = Image(platformImage: downloadedImage)
                 }
             }
         }.resume()

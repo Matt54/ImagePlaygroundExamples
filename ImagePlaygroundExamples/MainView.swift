@@ -15,8 +15,8 @@ struct MainView: View {
                     NavigationLink("Simple Integration", destination: SimpleIntegrationView())
                     NavigationLink("Simple Concept", destination: SimpleConceptView())
                     NavigationLink("Extracted Concept", destination: ExtractedConceptView())
-                    NavigationLink("Online URL Source Image Integration", destination: SourceImageIntegrationView())
-                    NavigationLink("Photo Library Source Image Integration", destination: PhotoLibrarySourceImageIntegrationView())
+                    NavigationLink("Online URL Source Image", destination: SourceImageIntegrationView())
+                    NavigationLink("Photo Library Source Image", destination: PhotoLibrarySourceImageIntegrationView())
                 } else {
                     Text("No iOS 18.1 Support")
                 }

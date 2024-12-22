@@ -7,17 +7,21 @@
 
 import ImagePlayground
 import SwiftUI
+import TipKit
 
 @available(iOS 18.1, macOS 15.1, *)
 struct SimpleIntegrationView: View {
     @Environment(\.supportsImagePlayground) private var supportsImagePlayground
-    @State private var isPresented: Bool = false
-    @State private var url: URL?
+    @State private var isImagePlaygroundPresented: Bool = false
+    @State private var generatedImageURL: URL?
+    @State private var showCancellationAlert: Bool = false
+    let tapImageTip = TapImageTip()
+    let notSupportedTip = NotSupportedTip()
     
     var body: some View {
         VStack(spacing: 20) {
-            Button(action: { isPresented = true }) {
-                LocalImageView(imageURL: url)
+            Button(action: { isImagePlaygroundPresented = true }) {
+                LocalImageView(imageURL: generatedImageURL)
                     .frame(width: 200, height: 200)
                     .background(Color.init(red: 0.95, green: 0.95, blue: 0.95))
                     .clipShape(RoundedRectangle(cornerRadius: 10))
@@ -25,19 +29,19 @@ struct SimpleIntegrationView: View {
             .buttonStyle(.plain)
             .disabled(!supportsImagePlayground)
             
-            Text(text)
+            TipView(supportsImagePlayground ? tapImageTip: notSupportedTip, arrowEdge: .top)
+                .frame(height: 50) // macOS expands to large frame otherwise
         }
         .padding(20)
-        .imagePlaygroundSheet(isPresented: $isPresented) { url in
-            self.url = url
-        }
-    }
-    
-    var text: String {
-        if supportsImagePlayground {
-            return "Tap Above to generate new image"
-        } else {
-            return "Image Playground Not Supported"
+        .imagePlaygroundSheet(isPresented: $isImagePlaygroundPresented, onCompletion: { url in
+            self.generatedImageURL = url
+        }, onCancellation: {
+            showCancellationAlert = true
+        })
+        .alert("Generation Cancelled", isPresented: $showCancellationAlert) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text("The image generation was cancelled.")
         }
     }
 }

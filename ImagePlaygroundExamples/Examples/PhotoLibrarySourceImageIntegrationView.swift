@@ -5,8 +5,9 @@
 //  Created by Matt Pfeiffer on 12/20/24.
 //
 
-import SwiftUI
 import PhotosUI
+import SwiftUI
+import TipKit
 
 @available(iOS 18.1, macOS 15.1, *)
 struct PhotoLibrarySourceImageIntegrationView: View {
@@ -15,16 +16,21 @@ struct PhotoLibrarySourceImageIntegrationView: View {
     @State private var generatedImageURL: URL?
     @State private var sourceImage: Image?
     @State private var selectedPhotoPickerItem: PhotosPickerItem? = nil
+    @State private var showCancellationAlert: Bool = false
+    let tapImageTip = TapImageTip()
+    let notSupportedTip = NotSupportedTip()
     
     var body: some View {
         VStack(spacing: 20) {
             if let sourceImage {
-                Text("Source Image")
-                sourceImage
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 200, height: 200)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Source Image").opacity(0.5)
+                    sourceImage
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 200, height: 200)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                }
             }
             
             PhotosPicker(
@@ -32,7 +38,7 @@ struct PhotoLibrarySourceImageIntegrationView: View {
                 matching: .images,
                 photoLibrary: .shared()
             ) {
-                Label("Select Photo", systemImage: "photo.fill")
+                Label("Select Source Photo", systemImage: "photo.fill")
                     .foregroundColor(.blue)
                     .padding()
                     .overlay(
@@ -45,7 +51,6 @@ struct PhotoLibrarySourceImageIntegrationView: View {
             Divider()
                 .padding(.vertical, 10)
             
-            Text("Generated Image")
             Button(action: { isImagePlaygroundPresented = true }) {
                 LocalImageView(imageURL: generatedImageURL)
                     .frame(width: 200, height: 200)
@@ -55,12 +60,21 @@ struct PhotoLibrarySourceImageIntegrationView: View {
             .buttonStyle(.plain)
             .disabled(!supportsImagePlayground)
             
-            Text(text)
+            TipView(supportsImagePlayground ? tapImageTip: notSupportedTip, arrowEdge: .top)
+                .frame(height: 50) // macOS expands to large frame otherwise
         }
         .padding(20)
-        .imagePlaygroundSheet(isPresented: $isImagePlaygroundPresented, sourceImage: sourceImage) { url in
+        .imagePlaygroundSheet(isPresented: $isImagePlaygroundPresented, sourceImage: sourceImage, onCompletion: { url in
             self.generatedImageURL = url
+        }, onCancellation: {
+            showCancellationAlert = true
+        })
+        .alert("Generation Cancelled", isPresented: $showCancellationAlert) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text("The image generation was cancelled.")
         }
+        
         .onChange(of: selectedPhotoPickerItem) { _, newItem in
             Task {
                 do {
@@ -77,12 +91,9 @@ struct PhotoLibrarySourceImageIntegrationView: View {
             }
         }
     }
-    
-    var text: String {
-        if supportsImagePlayground {
-            return "Tap Above to generate new image"
-        } else {
-            return "Image Playground Not Supported"
-        }
-    }
+}
+
+@available(iOS 18.1, macOS 15.1, *)
+#Preview {
+    PhotoLibrarySourceImageIntegrationView()
 }

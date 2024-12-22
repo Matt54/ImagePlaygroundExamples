@@ -7,6 +7,7 @@
 
 import ImagePlayground
 import SwiftUI
+import TipKit
 
 @available(iOS 18.1, macOS 15.1, *)
 struct ExtractedConceptView: View {
@@ -15,13 +16,14 @@ struct ExtractedConceptView: View {
     @State private var generatedImageURL: URL?
     @State private var conceptText: String = String.itsyBitsySpider
     @State private var conceptTitle: String = "Itsy Bitsy Spider"
+    let tapImageTip = TapImageTip()
+    let notSupportedTip = NotSupportedTip()
     
     var body: some View {
         VStack(spacing: 20) {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Title").opacity(0.5)
                 TextField("Enter concept title", text: $conceptTitle)
-//                    .textFieldStyle(.roundedBorder)
                     .textFieldStyle(.plain)
                     .padding(8)
                     .background(
@@ -57,19 +59,12 @@ struct ExtractedConceptView: View {
             .buttonStyle(.plain)
             .disabled(!supportsImagePlayground)
             
-            Text(text)
+            TipView(supportsImagePlayground ? tapImageTip: notSupportedTip, arrowEdge: .top)
+                .frame(height: 50) // macOS expands to large frame otherwise
         }
         .padding(20)
         .imagePlaygroundSheet(isPresented: $isImagePlaygroundPresented, concepts: [concept]) { url in
             self.generatedImageURL = url
-        }
-    }
-    
-    var text: String {
-        if supportsImagePlayground {
-            return "Tap Above to generate new image"
-        } else {
-            return "Image Playground Not Supported"
         }
     }
     

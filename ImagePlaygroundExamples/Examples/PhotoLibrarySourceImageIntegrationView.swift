@@ -74,7 +74,20 @@ struct PhotoLibrarySourceImageIntegrationView: View {
         } message: {
             Text("The image generation was cancelled.")
         }
-        
+        .toolbar {
+            if let generatedImageURL {
+                ToolbarItem {
+                    Button(action: { downloadImage(from: generatedImageURL) }) {
+                        Label("Download Image", systemImage: "arrowshape.down.circle.fill")
+                    }
+                }
+                ToolbarItem {
+                    ShareLink(item: generatedImageURL) {
+                        Label("Share", systemImage: "square.and.arrow.up")
+                    }
+                }
+            }
+        }
         .onChange(of: selectedPhotoPickerItem) { _, newItem in
             Task {
                 do {

@@ -16,6 +16,7 @@ struct ExtractedConceptView: View {
     @State private var generatedImageURL: URL?
     @State private var conceptText: String = String.itsyBitsySpider
     @State private var conceptTitle: String = "Itsy Bitsy Spider"
+    @State private var showCancellationAlert: Bool = false
     let tapImageTip = TapImageTip()
     let notSupportedTip = NotSupportedTip()
     
@@ -63,8 +64,29 @@ struct ExtractedConceptView: View {
                 .frame(height: 50) // macOS expands to large frame otherwise
         }
         .padding(20)
-        .imagePlaygroundSheet(isPresented: $isImagePlaygroundPresented, concepts: [concept]) { url in
+        .imagePlaygroundSheet(isPresented: $isImagePlaygroundPresented, concepts: [concept], onCompletion: { url in
             self.generatedImageURL = url
+        }, onCancellation: {
+            showCancellationAlert = true
+        })
+        .alert("Generation Cancelled", isPresented: $showCancellationAlert) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text("The image generation was cancelled.")
+        }
+        .toolbar {
+            if let generatedImageURL {
+                ToolbarItem {
+                    Button(action: { downloadImage(from: generatedImageURL) }) {
+                        Label("Download Image", systemImage: "arrowshape.down.circle.fill")
+                    }
+                }
+                ToolbarItem {
+                    ShareLink(item: generatedImageURL) {
+                        Label("Share", systemImage: "square.and.arrow.up")
+                    }
+                }
+            }
         }
     }
     

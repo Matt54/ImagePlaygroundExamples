@@ -2,23 +2,18 @@
 //  ExtractedConceptView.swift
 //  ImagePlaygroundExamples
 //
-//  Created by Matt Pfeiffer on 12/20/24.
-//
 
 import ImagePlayground
 import SwiftUI
-import TipKit
 
 @available(iOS 18.1, macOS 15.1, *)
 struct ExtractedConceptView: View {
     @Environment(\.supportsImagePlayground) private var supportsImagePlayground
     @State private var isImagePlaygroundPresented: Bool = false
     @State private var generatedImageURL: URL?
-    @State private var conceptText: String = String.itsyBitsySpider
+    @State private var conceptText: String = String.itsyBitsySpiderStoryText
     @State private var conceptTitle: String = "Itsy Bitsy Spider"
     @State private var showCancellationAlert: Bool = false
-    let tapImageTip = TapImageTip()
-    let notSupportedTip = NotSupportedTip()
     
     var body: some View {
         VStack(spacing: 20) {
@@ -51,17 +46,12 @@ struct ExtractedConceptView: View {
             
             Divider()
             
-            Button(action: { isImagePlaygroundPresented = true }) {
-                LocalImageView(imageURL: generatedImageURL)
-                    .frame(width: 200, height: 200)
-                    .background(Color.init(red: 0.95, green: 0.95, blue: 0.95))
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
-            }
-            .buttonStyle(.plain)
-            .disabled(!supportsImagePlayground)
+            LocalImageView(imageURL: generatedImageURL)
             
-            TipView(supportsImagePlayground ? tapImageTip: notSupportedTip, arrowEdge: .top)
-                .frame(height: 50) // macOS expands to large frame otherwise
+            Button(action: { isImagePlaygroundPresented = true }) {
+                Text(tapText)
+            }
+            .disabled(!supportsImagePlayground)
         }
         .padding(20)
         .imagePlaygroundSheet(isPresented: $isImagePlaygroundPresented, concepts: [concept], onCompletion: { url in
@@ -74,24 +64,18 @@ struct ExtractedConceptView: View {
         } message: {
             Text("The image generation was cancelled.")
         }
-        .toolbar {
-            if let generatedImageURL {
-                ToolbarItem {
-                    Button(action: { downloadImage(from: generatedImageURL) }) {
-                        Label("Download Image", systemImage: "arrowshape.down.circle.fill")
-                    }
-                }
-                ToolbarItem {
-                    ShareLink(item: generatedImageURL) {
-                        Label("Share", systemImage: "square.and.arrow.up")
-                    }
-                }
-            }
-        }
+        .downloadAndShareToolbar(url: generatedImageURL)
     }
-    
     var concept: ImagePlaygroundConcept {
         ImagePlaygroundConcept.extracted(from: conceptText, title: conceptTitle)
+    }
+    
+    var tapText: String {
+        if supportsImagePlayground {
+            return "Tap here to display Image Playground"
+        } else {
+            return "Image Playground not supported"
+        }
     }
 }
 
@@ -101,7 +85,7 @@ struct ExtractedConceptView: View {
 }
 
 extension String {
-    static var itsyBitsySpider: String {
+    static var itsyBitsySpiderStoryText: String {
         """
         The itsy bitsy spider climbed up the waterspout.
         Down came the rain

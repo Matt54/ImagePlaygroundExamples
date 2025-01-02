@@ -1,5 +1,5 @@
 //
-//  SimpleConceptView.swift
+//  BasicExampleView.swift
 //  ImagePlaygroundExamples
 //
 
@@ -7,30 +7,14 @@ import ImagePlayground
 import SwiftUI
 
 @available(iOS 18.1, macOS 15.1, *)
-struct SimpleConceptView: View {
+struct BasicExampleView: View {
     @Environment(\.supportsImagePlayground) private var supportsImagePlayground
     @State private var isImagePlaygroundPresented: Bool = false
     @State private var generatedImageURL: URL?
-    @State private var conceptText: String = "A monkey on a pirate ship"
     @State private var showCancellationAlert: Bool = false
-
+    
     var body: some View {
         VStack(spacing: 20) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Concept").opacity(0.5)
-                TextField("Enter concept", text: $conceptText)
-                    .textFieldStyle(.plain)
-                    .padding(8)
-                    .background(
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 4).fill().opacity(0.125)
-                            RoundedRectangle(cornerRadius: 4).stroke(Color.init(white:0.3))
-                        }
-                    )
-            }
-            
-            Divider()
-            
             LocalImageView(imageURL: generatedImageURL)
             
             Button(action: { isImagePlaygroundPresented = true }) {
@@ -39,7 +23,7 @@ struct SimpleConceptView: View {
             .disabled(!supportsImagePlayground)
         }
         .padding(20)
-        .imagePlaygroundSheet(isPresented: $isImagePlaygroundPresented, concept: conceptText, onCompletion: { url in
+        .imagePlaygroundSheet(isPresented: $isImagePlaygroundPresented, onCompletion: { url in
             self.generatedImageURL = url
         }, onCancellation: {
             showCancellationAlert = true
@@ -63,5 +47,5 @@ struct SimpleConceptView: View {
 
 @available(iOS 18.1, macOS 15.1, *)
 #Preview {
-    SimpleConceptView()
+    BasicExampleView()
 }

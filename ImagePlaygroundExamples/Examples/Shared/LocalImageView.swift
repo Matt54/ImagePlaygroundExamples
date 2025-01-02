@@ -2,8 +2,6 @@
 //  LocalImageView.swift
 //  ImagePlaygroundExamples
 //
-//  Created by Matt Pfeiffer on 12/20/24.
-//
 
 import SwiftUI
 
@@ -29,14 +27,14 @@ struct LocalImageView: View {
                 Image(cgImage, scale: 1.0, label: Text("Local Image"))
                     .resizable()
             } else {
-                PlaceholderBlobView()
-                    .frame(width: 160, height: 160)
+                Color.init(white: 0.95)
+                    .overlay( Image(systemName: "photo.fill") )
             }
         }
         .aspectRatio(contentMode: .fit)
-        .foregroundColor(.gray)
+        .foregroundColor(Color.init(white: 0.75))
+        .font(.system(size: 50))
         .frame(width: 200, height: 200)
-        .background(Color.init(red: 0.95, green: 0.95, blue: 0.95))
-        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .clipShape(RoundedRectangle(cornerRadius: 20))
     }
 }

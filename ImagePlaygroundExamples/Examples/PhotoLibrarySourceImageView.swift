@@ -1,24 +1,20 @@
 //
-//  PhotoLibrarySourceImageIntegrationView.swift
+//  PhotoLibrarySourceImageView.swift
 //  ImagePlaygroundExamples
 //
-//  Created by Matt Pfeiffer on 12/20/24.
-//
 
+import ImagePlayground
 import PhotosUI
 import SwiftUI
-import TipKit
 
 @available(iOS 18.1, macOS 15.1, *)
-struct PhotoLibrarySourceImageIntegrationView: View {
+struct PhotoLibrarySourceImageView: View {
     @Environment(\.supportsImagePlayground) private var supportsImagePlayground
     @State private var isImagePlaygroundPresented: Bool = false
     @State private var generatedImageURL: URL?
     @State private var sourceImage: Image?
     @State private var selectedPhotoPickerItem: PhotosPickerItem? = nil
     @State private var showCancellationAlert: Bool = false
-    let tapImageTip = TapImageTip()
-    let notSupportedTip = NotSupportedTip()
     
     var body: some View {
         VStack(spacing: 20) {
@@ -51,17 +47,12 @@ struct PhotoLibrarySourceImageIntegrationView: View {
             Divider()
                 .padding(.vertical, 10)
             
-            Button(action: { isImagePlaygroundPresented = true }) {
-                LocalImageView(imageURL: generatedImageURL)
-                    .frame(width: 200, height: 200)
-                    .background(Color.init(red: 0.95, green: 0.95, blue: 0.95))
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
-            }
-            .buttonStyle(.plain)
-            .disabled(!supportsImagePlayground)
+            LocalImageView(imageURL: generatedImageURL)
             
-            TipView(supportsImagePlayground ? tapImageTip: notSupportedTip, arrowEdge: .top)
-                .frame(height: 50) // macOS expands to large frame otherwise
+            Button(action: { isImagePlaygroundPresented = true }) {
+                Text(tapText)
+            }
+            .disabled(!supportsImagePlayground)
         }
         .padding(20)
         .imagePlaygroundSheet(isPresented: $isImagePlaygroundPresented, sourceImage: sourceImage, onCompletion: { url in
@@ -74,28 +65,14 @@ struct PhotoLibrarySourceImageIntegrationView: View {
         } message: {
             Text("The image generation was cancelled.")
         }
-        .toolbar {
-            if let generatedImageURL {
-                ToolbarItem {
-                    Button(action: { downloadImage(from: generatedImageURL) }) {
-                        Label("Download Image", systemImage: "arrowshape.down.circle.fill")
-                    }
-                }
-                ToolbarItem {
-                    ShareLink(item: generatedImageURL) {
-                        Label("Share", systemImage: "square.and.arrow.up")
-                    }
-                }
-            }
-        }
+        .downloadAndShareToolbar(url: generatedImageURL)
         .onChange(of: selectedPhotoPickerItem) { _, newItem in
             Task {
                 do {
                     if let data = try await newItem?.loadTransferable(type: Data.self),
-                       let rawImage = PlatformImage(data: data),
-                       let processedImage = resizeImageIfNeeded(rawImage, maxDimension: 1024) {
+                       let image = Image(data: data) {
                         DispatchQueue.main.async {
-                            self.sourceImage = Image(platformImage: processedImage)
+                            self.sourceImage = image
                         }
                     }
                 } catch {
@@ -104,9 +81,17 @@ struct PhotoLibrarySourceImageIntegrationView: View {
             }
         }
     }
+    
+    var tapText: String {
+        if supportsImagePlayground {
+            return "Tap here to display Image Playground"
+        } else {
+            return "Image Playground not supported"
+        }
+    }
 }
 
 @available(iOS 18.1, macOS 15.1, *)
 #Preview {
-    PhotoLibrarySourceImageIntegrationView()
+    PhotoLibrarySourceImageView()
 }

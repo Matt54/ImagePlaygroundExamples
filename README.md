@@ -3,6 +3,8 @@
 ## Examples
 
 - **Basic integration (iOS and macOS with SwiftUI, UIKit, and AppKit)
+
+- **Basic integration (iOS and macOS with SwiftUI, UIKit, and AppKit)
 - **Simple Concept (text string input)
 - **Extracted Concept (title and long-form text string inputs)
 - **Source Images (input reference image [online url or photo library])

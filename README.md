@@ -1,9 +1,7 @@
 # Image Playground Examples
 
-- Basic integration (iOS and macOS with SwiftUI, UIKit, and AppKit)
-- Simple Concept (text string input)
-- Extracted Concept (title and long-form text string inputs)
-- Source Images (input reference image [online url or photo library])
+A collection of examples of integrating Image Playground in iOS and macOS with SwiftUI, UIKit, and AppKit.
+It demonstrates the basic setup, text concepts, and source images.
 
 ## Basic Integration
 
@@ -22,8 +20,6 @@
 </p>
 
 ## Extracted Concept (long-form text string input)
-
-Takes in a title + long-form text and extracts concepts
 
 <p align="center">
 <kbd>

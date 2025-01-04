@@ -1,6 +1,6 @@
-# Image Playground Examples
+# Apple Image Playground API Examples
 
-A collection of examples of integrating Image Playground in iOS and macOS with SwiftUI, UIKit, and AppKit.
+Examples for integrating Apple's Image Playground API in iOS and macOS with SwiftUI, UIKit, and AppKit.
 It demonstrates the basic setup, text concepts, and source images.
 
 ## Basic Integration

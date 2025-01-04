@@ -16,9 +16,9 @@ struct MainView: View {
                     NavigationLink("Source Image (Online URL)", destination: OnlineSourceImageView())
                     NavigationLink("Source Image (Photos)", destination: PhotoLibrarySourceImageView())
                     #if os(iOS)
-                    NavigationLink("UIKit Integration", destination: UIKitExampleViewControllerRepresentable())
+                    NavigationLink("UIKit Integration", destination: UIKitExampleRepresentable())
                     #elseif os(macOS)
-                    NavigationLink("AppKit Integration", destination: AppKitExampleViewControllerRepresentable())
+                    NavigationLink("AppKit Integration", destination: AppKitExampleRepresentable())
                     #endif
                 } else {
                     #if os(iOS)

@@ -12,7 +12,6 @@ struct OnlineSourceImageView: View {
     @State private var isImagePlaygroundPresented: Bool = false
     @State private var generatedImageURL: URL?
     @State private var sourceImage: Image?
-    @State private var showCancellationAlert: Bool = false
     
     var body: some View {
         VStack(spacing: 20) {
@@ -50,14 +49,7 @@ struct OnlineSourceImageView: View {
         .padding(20)
         .imagePlaygroundSheet(isPresented: $isImagePlaygroundPresented, sourceImage: sourceImage, onCompletion: { url in
             self.generatedImageURL = url
-        }, onCancellation: {
-            showCancellationAlert = true
         })
-        .alert("Generation Cancelled", isPresented: $showCancellationAlert) {
-            Button("OK", role: .cancel) { }
-        } message: {
-            Text("The image generation was cancelled.")
-        }
         .downloadAndShareToolbar(url: generatedImageURL)
         .onAppear {
             loadImage()
@@ -71,7 +63,7 @@ struct OnlineSourceImageView: View {
     }
     
     private func loadImage() {
-        guard let url = URL(string: "https://picsum.photos/2000") else { return }
+        guard let url = URL(string: "https://picsum.photos/1000") else { return }
         
         URLSession.shared.dataTask(with: url) { data, response, error in
             if let data = data,

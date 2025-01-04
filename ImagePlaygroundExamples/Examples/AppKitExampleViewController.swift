@@ -9,7 +9,7 @@ import ImagePlayground
 import SwiftUI
 
 @available(iOS 18.1, macOS 15.1, *)
-struct AppKitExampleViewControllerRepresentable: NSViewControllerRepresentable {
+struct AppKitExampleRepresentable: NSViewControllerRepresentable {
     func makeNSViewController(context: Context) -> AppKitExampleViewController {
         return AppKitExampleViewController()
     }
@@ -114,8 +114,12 @@ extension AppKitExampleViewController: ImagePlaygroundViewController.Delegate {
         }
         dismiss(imagePlaygroundViewController)
     }
+    
+    func imagePlaygroundViewControllerDidCancel(_ imagePlaygroundViewController: ImagePlaygroundViewController) {
+        dismiss(animated: true, completion: nil)
+    }
 }
 
 @available(iOS 18.1, macOS 15.1, *)
-#Preview { AppKitExampleViewControllerRepresentable() }
+#Preview { AppKitExampleRepresentable() }
 #endif

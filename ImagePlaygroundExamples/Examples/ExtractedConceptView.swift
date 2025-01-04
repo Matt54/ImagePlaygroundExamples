@@ -66,6 +66,7 @@ struct ExtractedConceptView: View {
         }
         .downloadAndShareToolbar(url: generatedImageURL)
     }
+    
     var concept: ImagePlaygroundConcept {
         ImagePlaygroundConcept.extracted(from: conceptText, title: conceptTitle)
     }

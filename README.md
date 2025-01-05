@@ -1,5 +1,7 @@
 # Apple Image Playground API Examples
 
+## Check out the video tutorial - [Youtube Link](https://youtu.be/91V087d3rbc)
+
 Examples for integrating Apple's Image Playground API in iOS and macOS with SwiftUI, UIKit, and AppKit.
 It demonstrates the basic setup, text concepts, and source images.
 
